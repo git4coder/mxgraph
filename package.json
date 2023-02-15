@@ -1,5 +1,5 @@
 {
-  "name": "mxgraph",
+  "name": "@git4coder/mxgraph",
   "description": "mxGraph is a fully client side JavaScript diagramming library that uses SVG and HTML for rendering.",
   "version": "4.2.2",
   "homepage": "https://github.com/jgraph/mxgraph",

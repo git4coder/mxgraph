@@ -1,8 +1,8 @@
 {
   "name": "mxgraph4vue",
-  "description": "mxGraph is a fully client side JavaScript diagramming library that uses SVG and HTML for rendering.",
-  "version": "4.2.3",
-  "homepage": "https://github.com/jgraph/mxgraph",
+  "description": "mxGraph is a fully client side JavaScript diagramming library that uses SVG and HTML for rendering. Support Vue.js",
+  "version": "4.2.4",
+  "homepage": "https://github.com/git4coder/mxgraph",
   "author": {
     "name": "JGraph Ltd",
     "email": "support@jgraph.com"
@@ -10,10 +10,10 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jgraph/mxgraph.git"
+    "url": "git+https://github.com/git4coder/mxgraph.git"
   },
   "bugs": {
-    "url": "https://github.com/jgraph/mxgraph/issues"
+    "url": "https://github.com/git4coder/mxgraph/issues"
   },
   "main": "./javascript/dist/build.js",
   "scripts": {

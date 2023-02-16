@@ -702,6 +702,11 @@ var mxEvent =
 		return mxEvent.getMainEvent(e).clientX;
 	},
 
+	getContainerX: function(e)
+	{
+		return mxEvent.getMainEvent(e).offsetX;
+	},
+
 	/**
 	 * Function: getClientY
 	 * 
@@ -710,6 +715,11 @@ var mxEvent =
 	getClientY: function(e)
 	{
 		return mxEvent.getMainEvent(e).clientY;
+	},
+
+	getContainerY: function(e)
+	{
+		return mxEvent.getMainEvent(e).offsetY;
 	},
 
 	/**

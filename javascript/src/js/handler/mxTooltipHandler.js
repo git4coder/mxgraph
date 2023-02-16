@@ -135,13 +135,14 @@ mxTooltipHandler.prototype.setHideOnHover = function(value)
  */
 mxTooltipHandler.prototype.init = function()
 {
-	if (document.body != null)
+	var container = this.graph.container || document.body;
+	if (container != null)
 	{
 		this.div = document.createElement('div');
 		this.div.className = 'mxTooltip';
 		this.div.style.visibility = 'hidden';
 
-		document.body.appendChild(this.div);
+		container.appendChild(this.div);
 
 		mxEvent.addGestureListeners(this.div, mxUtils.bind(this, function(evt)
 		{
@@ -185,7 +186,9 @@ mxTooltipHandler.prototype.mouseDown = function(sender, me)
  */
 mxTooltipHandler.prototype.mouseMove = function(sender, me)
 {
-	if (me.getX() != this.lastX || me.getY() != this.lastY)
+	var meX = me.getX(true);
+	var meY = me.getY(true);
+	if (meX != this.lastX || meY != this.lastY)
 	{
 		this.reset(me, true);
 		var state = this.getStateForEvent(me);
@@ -198,8 +201,8 @@ mxTooltipHandler.prototype.mouseMove = function(sender, me)
 		}
 	}
 	
-	this.lastX = me.getX();
-	this.lastY = me.getY();
+	this.lastX = me.getX(true);
+	this.lastY = me.getY(true);
 };
 
 /**
@@ -245,8 +248,8 @@ mxTooltipHandler.prototype.reset = function(me, restart, state)
 			this.div.style.visibility == 'hidden'))
 		{
 			var node = me.getSource();
-			var x = me.getX();
-			var y = me.getY();
+			var x = me.getX(true);
+			var y = me.getY(true);
 			var stateSource = me.isSource(state.shape) || me.isSource(state.text);
 	
 			this.thread = window.setTimeout(mxUtils.bind(this, function()
@@ -308,7 +311,11 @@ mxTooltipHandler.prototype.show = function(tip, x, y)
 			this.init();
 		}
 		
-		var origin = mxUtils.getScrollOrigin();
+		// var origin = mxUtils.getScrollOrigin();
+		var origin = {
+			x: 0,
+			y: 0,
+		};
 
 		this.div.style.zIndex = this.zIndex;
 		this.div.style.left = (x + origin.x) + 'px';

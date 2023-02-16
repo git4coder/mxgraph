@@ -128,9 +128,13 @@ mxMouseEvent.prototype.isSource = function(shape)
  * 
  * Returns <evt.clientX>.
  */
-mxMouseEvent.prototype.getX = function()
+mxMouseEvent.prototype.getX = function(relativePosition)
 {
-	return mxEvent.getClientX(this.getEvent());
+	if (relativePosition) {
+		return mxEvent.getContainerX(this.getEvent());
+	} else {
+		return mxEvent.getClientX(this.getEvent());
+	}
 };
 
 /**
@@ -138,9 +142,13 @@ mxMouseEvent.prototype.getX = function()
  * 
  * Returns <evt.clientY>.
  */
-mxMouseEvent.prototype.getY = function()
+mxMouseEvent.prototype.getY = function(relativePosition)
 {
-	return mxEvent.getClientY(this.getEvent());
+	if (relativePosition) {
+		return mxEvent.getContainerY(this.getEvent());
+	} else {
+		return mxEvent.getClientY(this.getEvent());
+	}
 };
 
 /**

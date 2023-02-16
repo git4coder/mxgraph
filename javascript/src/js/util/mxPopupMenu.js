@@ -544,7 +544,7 @@ mxPopupMenu.prototype.isMenuShowing = function()
  */
 mxPopupMenu.prototype.showMenu = function()
 {
-	var container = this.graph.container || document.body;
+	var container = this.graph && this.graph.container || document.body;
 
 	// Disables filter-based shadow in IE9 standards mode
 	if (document.documentMode >= 9)

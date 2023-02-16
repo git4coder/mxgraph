@@ -4,6 +4,58 @@
 
 * 将 mxPopupMenu 和 mxToolTip 移入 .container (默认添加在 body 中，在 Vue 项目中看不到)
 
+## 用法
+
+```shell
+yarn add mxgraph4vue
+```
+
+```html
+<div ref="graph_container" class="graph-container"></div>
+
+<style lang="scss" scoped>
+.graph-container {
+  position: relative;
+  height: 400px;
+}
+</style>
+```
+
+```js
+import * as mxgraph from 'mxgraph4vue';
+import 'mxgraph4vue/javascript/src/css/common.css';
+const {
+  mxGraph,
+  mxUtils,
+  mxHierarchicalLayout,
+  mxCellOverlay,
+  mxEvent,
+  mxRubberband,
+  mxKeyHandler,
+  mxConstants,
+  mxImage,
+} = mxgraph();
+
+export default {
+  mounted() {
+    let graph = new mxGraph(this.$refs.graph_container);
+    let root = graph.getDefaultParent();
+    graph.getModel().beginUpdate();
+    try
+    {
+      let v1 = graph.insertVertex(root, null, 'Hello,', 20, 20, 80, 30);
+      let v2 = graph.insertVertex(root, null, 'World!', 200, 150, 80, 30);
+      let e1 = graph.insertEdge(root, null, '', v1, v2);
+    }
+    finally
+    {
+      graph.getModel().endUpdate();
+    }
+  },
+}
+```
+
+----
 
 *NOTE 09.11.2020* : Development on mxGraph has now stopped, this repo is effectively end of life.
 

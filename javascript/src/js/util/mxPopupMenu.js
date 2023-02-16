@@ -544,6 +544,8 @@ mxPopupMenu.prototype.isMenuShowing = function()
  */
 mxPopupMenu.prototype.showMenu = function()
 {
+	var container = this.graph.container || document.body;
+
 	// Disables filter-based shadow in IE9 standards mode
 	if (document.documentMode >= 9)
 	{
@@ -551,7 +553,7 @@ mxPopupMenu.prototype.showMenu = function()
 	}
 	
 	// Fits the div inside the viewport
-	document.body.appendChild(this.div);
+	container.appendChild(this.div);
 	mxUtils.fit(this.div);
 };
 

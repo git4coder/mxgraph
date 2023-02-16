@@ -184,8 +184,12 @@ mxPopupMenuHandler.prototype.mouseUp = function(sender, me)
 
 		// Menu is shifted by 1 pixel so that the mouse up event
 		// is routed via the underlying shape instead of the DIV
-		var origin = mxUtils.getScrollOrigin();
-		this.popup(me.getX() + origin.x + 1, me.getY() + origin.y + 1, cell, me.getEvent());
+		// var origin = mxUtils.getScrollOrigin();
+		var origin = {
+			x: 0,
+			y: 0,
+		};
+		this.popup(me.getX(true) + origin.x + 1, me.getY(true) + origin.y + 1, cell, me.getEvent());
 		me.consume();
 	}
 	

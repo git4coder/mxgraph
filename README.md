@@ -1,3 +1,10 @@
+# mxGraph for Vue.js
+
+改动：
+
+* 将 mxPopupMenu 和 mxToolTip 移入 .container (默认添加在 body 中，在 Vue 项目中看不到)
+
+
 *NOTE 09.11.2020* : Development on mxGraph has now stopped, this repo is effectively end of life.
 
 Known forks:

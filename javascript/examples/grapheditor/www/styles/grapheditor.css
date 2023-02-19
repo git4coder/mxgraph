@@ -1505,3 +1505,23 @@ html td.mxWindowTitle {
 	overflow-x : auto;
 	overflow-y : hidden;
 }
+path.flow {
+  stroke-dasharray: 10;
+  animation: flow 0.5s linear;
+  animation-iteration-count: infinite;
+}
+@keyframes flow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+path.reverseFlow {
+  stroke-dasharray: 10;
+  animation: reverse-flow 0.5s linear;
+  animation-iteration-count: infinite;
+}
+@keyframes reverse-flow {
+  to {
+    stroke-dashoffset: 20;
+  }
+}

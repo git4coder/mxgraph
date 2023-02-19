@@ -437,7 +437,7 @@ EditorUi = function(editor, container, lightbox)
 		var connectStyles = ['shape', 'edgeStyle', 'curved', 'rounded', 'elbow', 'jumpStyle', 'jumpSize',
 			'comic', 'sketch', 'fillWeight', 'hachureGap', 'hachureAngle', 'jiggle',
 			'disableMultiStroke', 'disableMultiStrokeFill', 'fillStyle', 'curveFitting',
-			'simplification', 'sketchStyle'];
+			'simplification', 'sketchStyle', 'flowingLineStyle', 'flowingLineBackgroundColor'];
 		
 		// Note: Everything that is not in styles is ignored (styles is augmented below)
 		this.setDefaultStyle = function(cell)

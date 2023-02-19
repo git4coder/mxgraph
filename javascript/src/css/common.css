@@ -164,7 +164,7 @@ td.mxPopupMenuItem {
 	font-size: 10pt;
 }
 td.mxPopupMenuIcon {
-	background-color: #D0D0D0;
+	/* background-color: #D0D0D0; */
 	padding: 2px 4px 2px 4px;
 	font-size: 0;
 }
@@ -176,4 +176,24 @@ td.mxPopupMenuIcon img {
 .mxDisabled {
 	opacity: 0.2 !important;
 	cursor:default !important;
+}
+path.flow {
+  stroke-dasharray: 10;
+  animation: flow 0.5s linear;
+  animation-iteration-count: infinite;
+}
+@keyframes flow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+path.reverseFlow {
+  stroke-dasharray: 10;
+  animation: reverse-flow 0.5s linear;
+  animation-iteration-count: infinite;
+}
+@keyframes reverse-flow {
+  to {
+    stroke-dashoffset: 20;
+  }
 }

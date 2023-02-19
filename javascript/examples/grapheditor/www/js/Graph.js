@@ -1167,6 +1167,9 @@ Graph.diagramLanguage = (urlParams['diagram-language'] != null) ? urlParams['dia
  */
 Graph.lineJumpsEnabled = true;
 
+// 连线的动画
+Graph.flowingLineEnabled = true;
+
 /**
  * Default size for line jumps.
  */
@@ -6274,7 +6277,7 @@ if (typeof mxVertexHandler != 'undefined')
 			var style = 'edgeStyle=' + (this.currentEdgeStyle['edgeStyle'] || 'none') + ';';
 			var keys = ['shape', 'curved', 'rounded', 'comic', 'sketch', 'fillWeight', 'hachureGap',
 				'hachureAngle', 'jiggle', 'disableMultiStroke', 'disableMultiStrokeFill', 'fillStyle',
-				'curveFitting', 'simplification', 'comicStyle', 'jumpStyle', 'jumpSize'];
+				'curveFitting', 'simplification', 'comicStyle', 'jumpStyle', 'jumpSize', 'flowingLineStyle', 'flowingLineBackgroundColor'];
 			
 			for (var i = 0; i < keys.length; i++)
 			{

@@ -122,7 +122,7 @@ Format.prototype.initSelectionState = function()
 	return {vertices: [], edges: [], x: null, y: null, width: null, height: null, style: {},
 		containsImage: false, containsLabel: false, fill: true, glass: true, rounded: true,
 		autoSize: false, image: true, shadow: true, lineJumps: true, resizable: true,
-		table: false, cell: false, row: false, movable: true, rotatable: true, stroke: true};
+		table: false, cell: false, row: false, movable: true, rotatable: true, stroke: true, flowingLine: true};
 };
 
 /**
@@ -1220,6 +1220,92 @@ BaseFormatPanel.prototype.createColorOption = function(label, getColorFn, setCol
 	}
 	
 	return div;
+};
+
+BaseFormatPanel.prototype.createColorPicker = function (
+  getColorFn,
+  setColorFn,
+  defaultColor,
+  listener,
+  callbackFn
+) {
+  var div = document.createElement("div");
+  div.style.display = "inline-block";
+
+  var value = getColorFn();
+  var applying = false;
+  var btn = null;
+
+  var apply = function (color, disableUpdate, forceUpdate) {
+    if (!applying) {
+      applying = true;
+      color = /(^#?[a-zA-Z0-9]*$)/.test(color) ? color : defaultColor;
+      btn.innerHTML =
+        '<div style="width:' +
+        (mxClient.IS_QUIRKS ? "30" : "36") +
+        "px;height:12px;margin:3px;border:1px solid black;background-color:" +
+        mxUtils.htmlEntities(color != null && color != mxConstants.NONE ? color : defaultColor) +
+        ';"></div>';
+
+      // Fine-tuning in Firefox, quirks mode and IE8 standards
+      if (mxClient.IS_QUIRKS || document.documentMode == 8) {
+        btn.firstChild.style.margin = "0px";
+      }
+
+      if (callbackFn != null) {
+        callbackFn(color);
+      }
+
+      if (!disableUpdate) {
+        value = color;
+
+        // Checks if the color value needs to be updated in the model
+        if (forceUpdate || getColorFn() != value) {
+          setColorFn(value);
+        }
+      }
+
+      applying = false;
+    }
+  };
+
+  btn = mxUtils.button(
+    "",
+    mxUtils.bind(this, function (evt) {
+      this.editorUi.pickColor(value, function (color) {
+        apply(color, null, true);
+      });
+      mxEvent.consume(evt);
+    })
+  );
+
+  btn.className = "geColorBtn";
+  div.appendChild(btn);
+
+  // mxEvent.addListener(div, "click", function (evt) {
+  //   var source = mxEvent.getSource(evt);
+  //   if (source == cb || source.nodeName != "INPUT") {
+  //     // Toggles checkbox state for click on label
+  //     if (source != cb) {
+  //       cb.checked = !cb.checked;
+  //     }
+  //     // Overrides default value with current value to make it easier
+  //     // to restore previous value if the checkbox is clicked twice
+  //     if (!cb.checked && value != null && value != mxConstants.NONE && defaultColor != mxConstants.NONE) {
+  //       defaultColor = value;
+  //     }
+  //     apply(cb.checked ? defaultColor : mxConstants.NONE);
+  //   }
+  // });
+
+  apply(value, true);
+
+  if (listener != null) {
+    listener.install(apply);
+    this.listeners.push(listener);
+  }
+
+  return div;
 };
 
 /**
@@ -4267,6 +4353,7 @@ StyleFormatPanel.prototype.init = function()
 	
 		this.container.appendChild(this.addStroke(this.createPanel()));
 		this.container.appendChild(this.addLineJumps(this.createPanel()));
+		this.container.appendChild(this.addFlowingLine(this.createPanel()));
 		var opacityPanel = this.createRelativeOption(mxResources.get('opacity'), mxConstants.STYLE_OPACITY, 41);
 		opacityPanel.style.paddingTop = '8px';
 		opacityPanel.style.paddingBottom = '8px';
@@ -5344,6 +5431,138 @@ StyleFormatPanel.prototype.addStroke = function(container)
 	listener();
 
 	return container;
+};
+
+/**
+ * Adds UI for configuring line animations.
+ */
+StyleFormatPanel.prototype.addFlowingLine = function (container)
+{
+  var ss = this.format.getSelectionState();
+
+  if (Graph.flowingLineEnabled && ss.edges.length > 0 && ss.vertices.length == 0 && ss.flowingLine) {
+    container.style.padding = "8px 0px 24px 18px";
+
+    var ui = this.editorUi;
+    var editor = ui.editor;
+    var graph = editor.graph;
+
+    var span = document.createElement("div");
+    span.style.position = "absolute";
+    span.style.fontWeight = "bold";
+    span.style.width = "80px";
+
+    mxUtils.write(span, mxResources.get("flowingLine"));
+    container.appendChild(span);
+
+    var styleSelect = document.createElement("select");
+    styleSelect.style.position = "absolute";
+    styleSelect.style.marginTop = "-2px";
+    styleSelect.style.right = "76px";
+    styleSelect.style.width = "62px";
+
+    var styles = ["none", "flow", "reverseFlow"];
+
+    for (var i = 0; i < styles.length; i++) {
+      var styleOption = document.createElement("option");
+      styleOption.setAttribute("value", styles[i]);
+      mxUtils.write(styleOption, mxResources.get(styles[i]));
+      styleSelect.appendChild(styleOption);
+    }
+
+    graph.addListener("size", function () {
+      // Adds animation to edge shape and makes "pipe" visible
+      graph.view.states.visit(function (key, state) {
+        if (graph.model.isEdge(state.cell)) {
+          var flowingLineStyle = state.style.flowingLineStyle;
+          if (flowingLineStyle) {
+            // console.log('state.style', state.style);
+            var strokeWidth = state.shape.node.getElementsByTagName("path")[1].getAttribute("stroke-width") || state.style.strokeWidth; // 缩放画布时蚂蚁线背景与线保持同宽
+            state.shape.node.getElementsByTagName("path")[0].removeAttribute("visibility");
+            state.shape.node.getElementsByTagName("path")[0].setAttribute("stroke-width", strokeWidth);
+            state.shape.node.getElementsByTagName("path")[0].setAttribute("stroke", state.style.flowingLineBackgroundColor || "transparent");
+            state.shape.node.getElementsByTagName("path")[1].setAttribute("class", flowingLineStyle);
+          }
+        }
+      });
+    });
+
+    mxEvent.addListener(styleSelect, "change", function (evt) {
+      graph.getModel().beginUpdate();
+      try {
+        graph.setCellStyles("flowingLineStyle", styleSelect.value, graph.getSelectionCells());
+        ui.fireEvent(
+          new mxEventObject(
+            "styleChanged",
+            "keys",
+            ["flowingLineStyle"],
+            "values",
+            [styleSelect.value],
+            "cells",
+            graph.getSelectionCells()
+          )
+        );
+      } finally {
+        graph.getModel().endUpdate();
+      }
+
+      mxEvent.consume(evt);
+    });
+
+    // Stops events from bubbling to color option event handler
+    mxEvent.addListener(styleSelect, "click", function (evt) {
+      mxEvent.consume(evt);
+    });
+
+    container.appendChild(styleSelect);
+
+    var option = this.createColorPicker(
+      function () {
+        var state = graph.view.getState(graph.getSelectionCell());
+        if (state != null) {
+          return mxUtils.getValue(state.style, 'flowingLineBackgroundColor', null);
+        }
+        return null;
+      },
+      function (color) {
+        graph.setCellStyles(
+          'flowingLineBackgroundColor',
+          color,
+          graph.getSelectionCells()
+        );
+      },
+      "transparent",
+      {
+        install: function (apply) {
+          // ignore
+        },
+        destroy: function () {
+          // ignore
+        },
+      }
+    );
+    option.style.position = "absolute";
+    option.style.marginTop = "-4px";
+    option.style.right = "20px";
+    container.appendChild(option);
+
+    var listener = mxUtils.bind(this, function (sender, evt, force) {
+      ss = this.format.getSelectionState();
+      styleSelect.value = mxUtils.getValue(ss.style, "flowingLineStyle", "none");
+    });
+
+    graph.getModel().addListener(mxEvent.CHANGE, listener);
+    this.listeners.push({
+      destroy: function () {
+        graph.getModel().removeListener(listener);
+      },
+    });
+    listener();
+  } else {
+    container.style.display = "none";
+  }
+
+  return container;
 };
 
 /**

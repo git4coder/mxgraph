@@ -55,6 +55,16 @@ export default {
 }
 ```
 
+Vue3 需要在入口 index.html 中添加（防止出现 `ReferenceError: * is not defined` 导致项目跑不起来）：
+
+```
+window.mxLoadResources = null;
+window.mxForceIncludes = null;
+window.mxResourceExtension = null;
+window.mxLoadStylesheets = null;
+```
+
+----
 ----
 
 *NOTE 09.11.2020* : Development on mxGraph has now stopped, this repo is effectively end of life.

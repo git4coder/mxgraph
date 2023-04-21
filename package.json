@@ -1,7 +1,7 @@
 {
   "name": "mxgraph4vue",
   "description": "mxGraph is a fully client side JavaScript diagramming library that uses SVG and HTML for rendering. Support Vue.js",
-  "version": "4.2.4",
+  "version": "4.2.5",
   "homepage": "https://github.com/git4coder/mxgraph",
   "author": {
     "name": "JGraph Ltd",

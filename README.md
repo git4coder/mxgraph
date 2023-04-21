@@ -55,7 +55,11 @@ export default {
 }
 ```
 
-Vue3 需要在入口 index.html 中添加（防止出现 `ReferenceError: * is not defined` 导致项目跑不起来）：
+Vue 3:
+
+1. 将`import * as mxgraph from 'mxgraph4vue';`改为`import mxgraph from 'mxgraph4vue';`，build 后需要到编译后的`.js`文件中搜索`=mxgraph$1()`替换为`=mxgraph$1.default()`。
+
+1. 需要在入口 index.html 中添加（防止出现 `ReferenceError: * is not defined` 导致项目跑不起来）：
 
 ```
 window.mxLoadResources = null;

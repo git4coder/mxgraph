@@ -68,6 +68,20 @@ window.mxResourceExtension = null;
 window.mxLoadStylesheets = null;
 ```
 
+1. 导入 xml 后页面空白
+
+```js
+let xml = '<mxGraphModel><root><mxCell id="0"/><mxCell id="1" parent="0"/>……';
+xml = xml.replace(/(?<=style=")([^;"=]+)(?=[;"])/g, 'shape=$1'); // 解决图片组件显示为小蓝块的问题（style="image;"需要改为style="shape=image;"）
+let xmlDocument = mxUtils.parseXml(xml);
+let decoder = new mxCodec(xmlDocument);
+let node = xmlDocument.documentElement;
+window.mxGraphModel = mxGraphModel; // 为解决导入空白而加 1/3，mxCodec.decode() 方法非要在 window 上找对象……
+window.mxGeometry = mxGeometry;     // 为解决导入空白而加 2/3
+window.mxPoint = mxPoint;           // 为解决导入空白而加 3/3
+decoder.decode(node, self.graph.getModel()); // decode(待decode的节点, decode后放在哪里)
+```
+
 ----
 ----
 
